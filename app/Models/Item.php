@@ -33,4 +33,9 @@ class Item extends Model
      */
     protected $casts = [
     ];
+
+    public function images()//add ImageModel紐づけ
+    {
+        return this->hasMany(Image::class);
+    }
 }

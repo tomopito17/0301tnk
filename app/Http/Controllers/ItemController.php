@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
@@ -29,7 +30,10 @@ class ItemController extends Controller
             ->select()
             ->get();
 
-        return view('item.index', compact('items'));
+        $images = Image
+            ::get(); 
+
+        return view('item.index', compact('items','images'));
     }
 
     /**
@@ -46,7 +50,7 @@ class ItemController extends Controller
 
             // 商品登録
             Item::create([
-                'user_id' => Auth::user()->id,
+                'Item_id' => Auth::Item()->id,
                 'name' => $request->name,
                 'type' => $request->type,
                 'detail' => $request->detail,
@@ -56,5 +60,33 @@ class ItemController extends Controller
         }
 
         return view('item.add');
+    }
+
+    public function delete(Request $request)
+    {
+        $item = Item::find($request->id);
+        $item -> delete();
+        
+        return redirect('items');
+    }
+
+    public function editAllocate($id,Request $request){
+    $item = Item::find($id);
+    return view('item.edit',compact('item'));
+    //dd($item);
+  }
+
+  public function ItemEdit($id,Request $request){
+    //取得した既存レコードから編集する
+    //$item = Item::find($id);
+    //$item = Item::where('id','=',$request->id)
+    //   ->update([
+    Item::where('id','=',$request->id)->
+      update([
+        'name' => $request->name,
+        'type' => $request->type,
+        'detail' => $request->detail,
+      ]);
+    return redirect('/items');
     }
 }

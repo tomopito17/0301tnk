@@ -28,6 +28,8 @@
                                 <th>名前</th>
                                 <th>種別</th>
                                 <th>詳細</th>
+                                <th>削除</th>
+                                <th>編集</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,14 +39,43 @@
                                     <td>{{ $item->name }}</td>
                                     <td>{{ $item->type }}</td>
                                     <td>{{ $item->detail }}</td>
+                                    <td>
+                                        <form method="POST" action="/items/upload" enctype="multipart/form-data">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$item->id}}">
+                                        <input type="file" name="image"><button>アップロード</button>
+                                        @foreach ($images as $image)                            
+                                            <img src="{{ asset($image->path) }}">                             
+                                        @endforeach 
+                                    <td>    
+                                    <td>
+                                        <form action="{{url('items/delete')}}" method="POST" 
+                                        onsubmit="return confirm('削除してよろしいですか？');">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$item->id}}">
+                                        <input type="submit" class="btn btn-danger" value="削除">
+                                        </form>
+                                    </td>
+                                    <td>                                       
+                                        <a href="{{ url('items/edit/' . $item->id) }}" class="btn btn-info">編集</a>                                  
+                                        <!-- <a href="{{url('items/edit/' . $item->id)}}">編集</a> -->                                        
+                                    </td>
                                 </tr>
                             @endforeach
-                        </tbody>
+                        </tbody>                        
                     </table>
+                    <!-- @foreach ($images as $image)                            
+                       <img src="{{ asset($image->path) }}">                             
+                    @endforeach -->
                 </div>
             </div>
         </div>
     </div>
+    <!-- <form method="POST" action="/items/upload" enctype="multipart/form-data">
+    @csrf
+    <input type="file" name="image">
+    <button>アップロード</button> -->
+</form>
 @stop
 
 @section('css')
