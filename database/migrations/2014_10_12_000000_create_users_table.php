@@ -21,6 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            //role: 1:一般ユーザー 2:管理者
+            $table->tinyInteger('role')->default(1);
         });
     }
 

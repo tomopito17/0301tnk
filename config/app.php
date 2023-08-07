@@ -175,6 +175,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //add 画像処理
+        Intervention\Image\ImageServiceProvider::class    
     ],
 
     /*
@@ -229,7 +231,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-
+        // add画像処理
+        'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

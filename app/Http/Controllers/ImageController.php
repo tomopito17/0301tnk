@@ -23,10 +23,12 @@ class ImageController extends Controller
         $image = new Image();
         $image->name = $file_name;
         $image->path = 'storage/' . $dir . '/' . $file_name;
-        $image->item_id = $request->id;
+       // $image->item_id = $request->id;
         $image->save();
         //$images = $request->items()->get(); //itemsと画像を紐づけ
 
         return redirect('/');
     }
+
+
 }
