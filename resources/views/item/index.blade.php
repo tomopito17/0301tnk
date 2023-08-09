@@ -9,22 +9,30 @@
 @section('content')
 {{-- @if (count($items) > 0)
 @endif --}}
-<div class="SearchBar">
-  <form action="/items" method="GET">
-	<input type="text" class="form-control" placeholder="検索" name="SearchWord" value="@isset($SearchWord){{$SearchWord}} @endisset" style="width:60%">
-    <span>
-			<button type="submit">
-        <i class="btn btn-default"></i> 検索
-      </button>
-		</span>
-		{{-- <style>
-      .item-sum {
-        margin-right: 25px;
-      }
-    </style> --}}
-    {{-- <span class="item-sum">{{"情報登録数：" . $count}}</span> --}}
-  </form>
+<div class="container" style="width: 100%">
+  <div class="row" >
+    <div class="col-4">
+      <form action="/items" method="GET">
+        <div class="input-group mb-3">
+          <input type="text" class="form-control" placeholder="検索" name="SearchWord" value="@isset($SearchWord){{$SearchWord}} @endisset" aria-describedby="button-addon2">
+        </div>
+				<button class="btn btn-outline-secondary" type="submit" id="button-addon2">検索</button>
+      </form>
+    </div>
+
+    <div class="col-4">
+      <div class="input-group mb-3" >
+        <div class="input-group-text">
+          <input class="form-check-input mt-0" type="checkbox" value=""@isset($AndSearchWord){{$AndSearchWord}} @endisset" aria-label="Checkbox for following text input" >
+        </div>
+        <input type="text" class="form-control" aria-label="Text input with checkbox" name="AndSearchWord" placeholder="AND検索">
+      </div>
+    </div>
+  </div>
 </div>
+
+
+
 
 <div class="row">
   <div class="col-12">
