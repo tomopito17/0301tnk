@@ -29,4 +29,5 @@ Route::prefix('items')->group(function () {
     Route::get('/edit/{id}', [App\Http\Controllers\ItemController::class, 'editAllocate']);
     Route::post('/edit/{id}', [App\Http\Controllers\ItemController::class, 'ItemEdit']);
     Route::post('/upload', [App\Http\Controllers\ImageController::class, 'upload']);
+    Route::post('/csv_upload', [App\Http\Controllers\ItemController::class, 'csv_upload']);
 });

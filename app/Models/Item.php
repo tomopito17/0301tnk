@@ -18,6 +18,7 @@ class Item extends Model
         'detail',
         'image',
         'keyword',
+        'url',
     ];
 
     /**

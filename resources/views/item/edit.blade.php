@@ -26,6 +26,11 @@
             <input type="text" class="form-control" id="name" name="name" placeholder="名前" value="{{$item->name}}">
           </div>
 
+					<div class="form-group">
+            <label for="name">URL</label>
+            <input type="text" class="form-control" id="url" name="url" placeholder="URL" value="{{$item->url}}">
+          </div>
+
           <div class="form-group">
             <label for="type">種別</label>
             <input type="number" class="form-control" id="type" name="type" placeholder="1, 2, 3, ..." value="{{$item->type}}">

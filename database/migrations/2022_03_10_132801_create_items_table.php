@@ -23,6 +23,7 @@ class CreateItemsTable extends Migration
             $table->timestamps();
             $table->longText('image')->nullable();
             $table->string('keyword')->nullable();
+            $table->longText('url')->nullable();
         });
     }
 
