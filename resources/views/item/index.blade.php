@@ -4,19 +4,19 @@
 
 @section('content_header')
 <div class="container" style="width: 100%">
-	@if(session('success') !=Null) 
-		@dump(session('success'))
-	@endif
-	<div class="row">
-		<h1 class="col">教材リスト</h1>
+  @if(session('success') !=Null)
+  @dump(session('success'))
+  @endif
+  <div class="row">
+    <h1 class="col">教材リスト</h1>
 
-		<div class="col" >
-			<div class="input-group	">
-				<input type="text" class="form-control" placeholder="名前検索" name="SearchName" value="@isset($SearchName){{$SearchName}} @endisset" aria-describedby="button-addon2">
-				<button class="btn btn-outline-secondary" type="submit" id="button-addon2">名前検索</button>
-			</div>
-		</div>		
-	</div>
+    <div class="col">
+      <div class="input-group	">
+        <input type="text" class="form-control" placeholder="名前検索" name="SearchName" value="@isset($SearchName){{$SearchName}} @endisset" aria-describedby="button-addon2">
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">名前検索</button>
+      </div>
+    </div>
+  </div>
 </div>
 @stop
 
@@ -26,11 +26,11 @@
   <form action="/items" method="GET">
 
     <div class="row">
-      <div class="col px-0" >
+      <div class="col px-0">
         <div class="input-group	">
           <input type="text" class="form-control" placeholder="キーワード検索" name="SearchWord" value="@isset($SearchWord){{$SearchWord}} @endisset" aria-describedby="button-addon2">
         </div>
-				<button class="btn btn-outline-secondary" type="submit" id="button-addon2">検索</button>
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">検索</button>
       </div>
 
       <div class="col px-0">
@@ -42,14 +42,16 @@
         </div>
       </div>
     </div>
-		<div class="row">
-			<form method="POST" action="/items/csv_upload" enctype="multipart/form-data">
-				@csrf
-				<input type="file" name="csv">
-				<button>CSVアップロード</button>
-			</form>
-		</div>
-  </form>
+	</form>
+
+	<div class="row">
+		<form method="POST" action="/items/csv_upload" enctype="multipart/form-data">
+			@csrf
+			<input type="file" name="csv">
+			<button>CSVアップロード</button>
+		</form>
+	</div>
+
 </div>
 
 
@@ -58,10 +60,10 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">教材一覧</h3>			
-				@if (count($items) > 0)
-				<span class="item-sum">{{"　登録数：" . $count}}</span>
-				@endif
+        <h3 class="card-title">教材一覧</h3>
+        @if (count($items) > 0)
+        <span class="item-sum">{{"　登録数：" . $count}}</span>
+        @endif
         <div class="card-tools">
           <div class="input-group input-group-sm">
             <div class="input-group-append">

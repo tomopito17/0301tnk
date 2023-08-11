@@ -141,6 +141,7 @@ class ItemController extends Controller
 
   public function csv_upload(Request $request)
   {
+    // dd($request);
     if ($request->hasFile('csv')) {
       $file = $request->file('csv');
       $csvData = file($file->getRealPath());
@@ -153,7 +154,7 @@ class ItemController extends Controller
     // $collection = (new FastExcel)->configureCsv(';', '#', 'gbk')->import('file.csv');
     // $Items = (new FastExcel)->import('file.xlsx', function ($line) {}
       array_shift($csvData);// 最初の行(項目ラベルレコード)をスキップ
-      //dd($csvData);
+      // dd($csvData);
       foreach ($csvData as $item) {
         $data = str_getcsv($item); // CSV行を配列に変換
 
