@@ -21,6 +21,12 @@ Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+Route::prefix('users')->group(function () {    
+    Route::get('/', [App\Http\Controllers\UserController::class, 'index']);
+    Route::get('/edit/{id}', [App\Http\Controllers\UserController::class, 'editAllocateUser']);
+    Route::post('/edit/{id}', [App\Http\Controllers\UserController::class, 'UserEdit']);
+});
+
 Route::prefix('items')->group(function () {
     Route::get('/', [App\Http\Controllers\ItemController::class, 'index']);
     Route::get('/add', [App\Http\Controllers\ItemController::class, 'add']);

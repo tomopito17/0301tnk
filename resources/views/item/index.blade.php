@@ -78,10 +78,9 @@
             <tr>
               <th>ID</th>
               <th>名前(リンク)</th>
-              <th>種別</th>
+              <th class=text-center>種別/登録者</th>
               <th>詳細</th>
-              <th>削除</th>
-              <th>編集</th>
+              <th>　削除/編集</th>              
               <th>アイコン</th>
               <th>キーワード</th>
             </tr>
@@ -91,7 +90,9 @@
             <tr>
               <td>{{ $item->id }}</td>
               <td><a href="{{$item->url}}" target="_blank">{{ $item->name }}</a></td>
-              <td>{{ $item->type }}</td>
+              <td class=text-center>
+                @if($item->type==1)Web @else 本  @endif {{"/".$item->user_id}}
+              </td>
               <td>{{ $item->detail }}</td>
               {{-- <td> 
                 @csrf
@@ -102,16 +103,22 @@
               @endforeach
               <td> --}}
               <td>
-                <form action="{{url('items/delete')}}" method="POST" onsubmit="return confirm('削除してよろしいですか？');">
-                  @csrf
-                  <input type="hidden" name="id" value="{{$item->id}}">
-                  <input type="submit" class="btn btn-danger" value="削除">
-                </form>
+              <div class="row">
+                  <form action="{{url('items/delete')}}" method="POST" onsubmit="return confirm('削除してよろしいですか？');">
+                    @csrf
+                    <input type="hidden" name="id" value="{{$item->id}}">
+                    <div class="col px-0">
+                    <input type="submit" class="btn btn-danger" value="削除">
+                    </div>
+                  </form>             
+                <div class="col px-1">
+                  <a href="{{ url('items/edit/' . $item->id) }}" class="btn btn-info">編集</a>
+                  {{-- <a href="{{url('items/edit/' . $item->id)}}">編集</a> --}}
+                </div>
+              </div>
+
               </td>
-              <td>
-                <a href="{{ url('items/edit/' . $item->id) }}" class="btn btn-info">編集</a>
-                {{-- <a href="{{url('items/edit/' . $item->id)}}">編集</a> --}}
-              </td>
+                            
               <td>
                 <input type="hidden" id="file" name="image">
                 @if($item->image!=Null)
@@ -132,8 +139,8 @@
   </div>
 </div>
 
-
 <form method="POST" action="/items/upload" enctype="multipart/form-data">
+
   @csrf
   <input type="file" name="image">
   <button>アップロード</button>

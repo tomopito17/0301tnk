@@ -15,7 +15,7 @@ return [
     */
 
     'title' => '教材管理',
-    'title_prefix' => '教材収集',
+    'title_prefix' => '',
     'title_postfix' => '',
 
     /*
@@ -60,7 +60,7 @@ return [
     | Here you can activate and change the user menu.
     |
     | For detailed instructions you can look the user menu section here:
-    | https://github.com/jeroennoten/Laravel-AdminLTE/wiki/Basic-Configuration
+    | https://github.com/jeroennotenjeroennoten/Laravel-AdminLTE/wiki/Basic-Configuration
     |
     */
 
@@ -233,13 +233,20 @@ return [
 
         [
             'text' => 'CSV_INPORT',
-            'url'  => 'items',
+            'url'  => '#',
             'icon' => 'fas fa-gamepad',
         ],
-        // AdminLTEデフォルト
-        /*
-        // Navbar items:
+
         [
+            'text' => 'ユーザ管理',
+            'url'  => '#',
+            'icon' => 'fas fa-gamepad',
+            'can' => 'isAdmin'  //Adminのみ
+        ],
+        // AdminLTEデフォルト
+        
+        // Navbar items:
+       /* [
             'type'         => 'navbar-search',
             'text'         => 'search',
             'topnav_right' => true,
