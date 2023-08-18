@@ -12,23 +12,25 @@ class UserController extends Controller
         return view('user.index',compact('users'));
     }
     
-    // public function edit(Request $request)
-    // {
-    //     $user = User::find($request->id);
-    //     return view('user.edit',compact('user'));
-    
-    // }
 
-    // public function update(Request $request)
-    // {
-    //     $user = User::find($request->id);
-    //     $user->name = $request->name;
-    //     $user->email = $request->email;
-    //     if($request->role){ $user->role = $request->role; }
-    //     else{ $user->role = 0; }
-    //     $user->save();
+    public function edit(Request $request)
+    {
+        $user = User::find($request->id);
+        return view('user.edit',compact('user'));
+    
+    }
+
+    public function update(Request $request)
+    {
+        $user = User::find($request->id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if($request->role){ $user->role = $request->role; }
+        else{ $user->role = 0; }
+        $user->save();
         
-    //     return redirect('/user');
-    // }
+        return redirect('/user');
+    }
+
 
 }

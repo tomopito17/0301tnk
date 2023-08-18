@@ -228,19 +228,19 @@ return [
         [
             'text' => '教材一覧',
             'url'  => 'items',
-            'icon' => 'fas fa-gamepad',
+            'icon' => 'far fa-fw fa-file',
         ],
 
         [
             'text' => 'CSV_INPORT',
-            'url'  => '#',
-            'icon' => 'fas fa-gamepad',
+            'url'  => 'items/csvfile_set',
+            'icon' => 'fas fa-wrench nav-icon',
         ],
 
         [
             'text' => 'ユーザ管理',
-            'url'  => '#',
-            'icon' => 'fas fa-gamepad',
+            'url'  => 'user',
+            'icon' => 'fas fa-fw fa-user',
             'can' => 'isAdmin'  //Adminのみ
         ],
         // AdminLTEデフォルト

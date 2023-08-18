@@ -42,4 +42,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function items() // 複数形　Itemモデル紐づけ
+    {
+        return $this->hasMany('App\Models\Item');
+    }
 }

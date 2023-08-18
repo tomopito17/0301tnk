@@ -36,4 +36,9 @@ Route::prefix('items')->group(function () {
     Route::post('/edit/{id}', [App\Http\Controllers\ItemController::class, 'ItemEdit']);
     Route::post('/upload', [App\Http\Controllers\ImageController::class, 'upload']);
     Route::post('/csv_upload', [App\Http\Controllers\ItemController::class, 'csv_upload']);
+    Route::get('/csvfile_set', [App\Http\Controllers\ItemController::class, 'csvfile_set']);
 });
+
+Route::get('/user', [App\Http\Controllers\UserController::class, 'index']);
+Route::get('/user/edit/{id}', [App\Http\Controllers\UserController::class, 'edit']);
+Route::post('/user/update', [App\Http\Controllers\UserController::class, 'update']);

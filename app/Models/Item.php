@@ -45,4 +45,10 @@ class Item extends Model
     // {
     //     return this->hasMany(Image::class);
     // }
+    public function user() // 単数形　関連テーブル紐づけ
+    {
+        return $this->belongsTo('App\Models\User');
+    }    
+
 }
+

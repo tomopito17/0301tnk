@@ -35,7 +35,17 @@
 
           <div class="form-group">
             <label for="type">種別</label>
-            <input type="number" class="form-control" id="type" name="type" placeholder="1, 2, 3, ...">
+            {{-- <input type="number" class="form-control" id="type" name="type" placeholder="WEB, 本"> --}}
+            <select class="form-select" name="type">
+              <option value="">選択して下さい</option>
+              <option value="1">WEB</option>
+              <option value="2">本</option>
+            </select>
+            @if($errors->has('type'))
+            <span style="color: red;">
+              {{ $errors->first('type') }}
+            </span>
+            @endif
           </div>
 
           <div class="form-group">

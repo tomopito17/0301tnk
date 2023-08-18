@@ -3,34 +3,49 @@
 @section('title', '教材一覧')
 
 @section('content_header')
-<div class="container" style="width: 100%">
-  @if(session('success') !=Null)
-  @dump(session('success'))
-  @endif
-  <div class="row">
-    <h1 class="col">教材リスト</h1>
+ {{-- @if(session('success') !=Null)
+ @dump(session('success'))
+ @endif --}}
+ 
 
+<div class="container-fluid" style="width: 100%">
+  <div class="row px-0">
+  <h1>教材リスト</h1>
     <div class="col">
-      <div class="input-group	">
-        <input type="text" class="form-control" placeholder="名前検索" name="SearchName" value="@isset($SearchName){{$SearchName}} @endisset" aria-describedby="button-addon2">
-        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">名前検索</button>
-      </div>
+      <form action="/items" method="GET">
+      <label for="type" class="form-label">名前か詳細で検索対象を選択</label>        
+      <select class="form-select" name="select" >
+        {{-- <option value="" >選択してください</option> --}}
+        <option value="select-name" @if(isset($_GET['select']) && $_GET['select'] == 'select-name'){{"selected"}} @endif>名前</option>
+        <option value="select-detail" @if(isset($_GET['select']) && $_GET['select'] == 'select-detail'){{"selected"}} @endif>詳細</option>
+        <option value="select-both" @if(isset($_GET['select']) && $_GET['select'] == 'select-both'){{"selected"}} @endif>名前と詳細</option>
+      </select>
+    {{-- </div>
+    <div class="col float-left"> --}}
+      
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="名前or詳細検索" name="SearchName" value="@isset($SearchName){{$SearchName}} @endisset" aria-describedby="button-addon2">
+          <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="Search" value="Name">名前or詳細検索</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
+
 @stop
 
 @section('content')
 
-<div class="container" style="width: 100%">
+<div class="container-fluid">
   <form action="/items" method="GET">
 
     <div class="row">
+      <label for="type" class="form-label">キーワード検索</label>
       <div class="col px-0">
         <div class="input-group	">
           <input type="text" class="form-control" placeholder="キーワード検索" name="SearchWord" value="@isset($SearchWord){{$SearchWord}} @endisset" aria-describedby="button-addon2">
         </div>
-        <button class="btn btn-outline-secondary" type="submit" id="button-addon2">検索</button>
+        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="Search" value="keyword">キーワード検索</button>
       </div>
 
       <div class="col px-0">
@@ -42,15 +57,15 @@
         </div>
       </div>
     </div>
-	</form>
+  </form>
 
-	<div class="row">
+  {{-- <div class="row">
 		<form method="POST" action="/items/csv_upload" enctype="multipart/form-data">
 			@csrf
 			<input type="file" name="csv">
 			<button>CSVアップロード</button>
 		</form>
-	</div>
+	</div> --}}
 
 </div>
 
@@ -78,10 +93,10 @@
             <tr>
               <th>ID</th>
               <th>名前(リンク)</th>
+              <th>アイコン</th>                  
               <th class=text-center>種別/登録者</th>
               <th>詳細</th>
-              <th>　削除/編集</th>              
-              <th>アイコン</th>
+              <th>変更</th>
               <th>キーワード</th>
             </tr>
           </thead>
@@ -89,11 +104,22 @@
             @foreach ($items as $item)
             <tr>
               <td>{{ $item->id }}</td>
-              <td><a href="{{$item->url}}" target="_blank">{{ $item->name }}</a></td>
-              <td class=text-center>
-                @if($item->type==1)Web @else 本  @endif {{"/".$item->user_id}}
+              <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap; max-width:25%">
+                <a href="{{$item->url}}" target="_blank">{{ $item->name }}</a>
               </td>
-              <td>{{ $item->detail }}</td>
+              
+              <td>
+                <input type="hidden" id="file" name="image">
+                @if($item->image!=Null)
+                <img src="data:image/png;base64, {{ $item->image }} " style="max-height: 50px; width:auto">
+                @else {{"画像無"}}
+                @endif
+              </td>
+              
+              <td class=text-center>
+                @if($item->type==1)Web @else 本 @endif {{"/".$item->user->name}}
+              </td>
+              <td><details><summary></summary>{{ $item->detail }}</details></td>
               {{-- <td> 
                 @csrf
                 <input type="hidden" name="id" value="{{$item->id}}">
@@ -103,28 +129,21 @@
               @endforeach
               <td> --}}
               <td>
-              <div class="row">
+                <button class="toggle-details" >管理</button>
+                <div class="details" style="display: none;">
+                <div class="row">
                   <form action="{{url('items/delete')}}" method="POST" onsubmit="return confirm('削除してよろしいですか？');">
                     @csrf
                     <input type="hidden" name="id" value="{{$item->id}}">
                     <div class="col px-0">
-                    <input type="submit" class="btn btn-danger" value="削除">
+                      <input type="submit" class="btn btn-danger" value="削除">
                     </div>
-                  </form>             
-                <div class="col px-1">
-                  <a href="{{ url('items/edit/' . $item->id) }}" class="btn btn-info">編集</a>
-                  {{-- <a href="{{url('items/edit/' . $item->id)}}">編集</a> --}}
+                  </form>
+                  <div class="col px-1">
+                    <a href="{{ url('items/edit/' . $item->id) }}" class="btn btn-info">編集</a>
+                    {{-- <a href="{{url('items/edit/' . $item->id)}}">編集</a> --}}
+                  </div>
                 </div>
-              </div>
-
-              </td>
-                            
-              <td>
-                <input type="hidden" id="file" name="image">
-                @if($item->image!=Null)
-                <img src="data:image/png;base64, {{ $item->image }} " style="max-height: 50px; width:auto">
-                @else {{"画像無"}}
-                @endif
               </td>
               <td>{{ $item->keyword }}</td>
             </tr>
@@ -132,23 +151,41 @@
           </tbody>
         </table>
         {{-- @foreach ($images as $image)                            
-           <img src="{{ asset($image->path) }}">
+          <img src="{{ asset($image->path) }}">
         @endforeach --}}
       </div>
     </div>
   </div>
 </div>
-
-<form method="POST" action="/items/upload" enctype="multipart/form-data">
-
+{{-- @if() {{$items->links()}}
+@endif --}}
+{{-- <form method="POST" action="/items/upload" enctype="multipart/form-data">
   @csrf
   <input type="file" name="image">
   <button>アップロード</button>
-</form>
+</form> --}}
 @stop
 
 @section('css')
 @stop
 
 @section('js')
+<script>
+  $(document).ready(function() {
+      $('table').on('click', '.toggle-details', function() {
+          $(this).closest('tr').find('.details').toggle();
+      });
+  });
+</script>
+  {{-- <script>
+  $(document).ready(function() {
+    // 初期状態で非表示にする
+    $(".toggleable").hide();
+
+    // クリックした行のカラムを表示/非表示にする
+    $("tbody tr").click(function() {
+        $(this).find(".toggleable").toggle();
+    });
+});
+</script> --}}
 @stop

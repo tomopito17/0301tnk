@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
 use App\Models\Tag;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Illuminate\Support\Facades\Validator;
 
 class ItemController extends Controller
 {
@@ -16,6 +18,7 @@ class ItemController extends Controller
    *
    * @return void
    */
+
   public function __construct()
   {
     $this->middleware('auth');
@@ -27,33 +30,57 @@ class ItemController extends Controller
   public function index(Request $request)
   {
     //Itemカウント
-    $count = Item::count();  
+    $count = Item::count();
     // 商品一覧取得
     $items = Item
-      ::where('items.status', 'active')
+      ::with('user')
+      ->where('items.status', 'active')
       ->select()
       ->get();
     // dd($items);
 
     $images = Image::get();
-
-    if ($request->SearchWord) {
-      if ($request->AndSearchWord && ( "checked" == $request->input("checkbox")) ) {
-        $items= Item::where('keyword','like', '%'.$request->SearchWord.'%' )->Where('keyword','like', '%'.$request->AndSearchWord.'%' )->get();
-        // dd($items);
-      } else {
-        $items = Item::where('keyword', 'like', '%' . $request->SearchWord . '%')->get();
-        // dd($request);                    
+    $select = $request->input('select');
+    // dump($request->select);
+    if ($request->Search == "Name") {
+      if ($request->SearchName && ($select == "select-name")) {
+        // if ($request->SearchName) {
+        $items = Item::where('name', 'like', '%' . $request->SearchName . '%')->get();
+      } elseif ($request->SearchName && ($select == "select-detail")) {
+        $items = Item::where('detail', 'like', '%' . $request->SearchName . '%')->get();
+      }
+      elseif($request->SearchName && ($select == "select-both")){
+        $items = Item::where('name', 'like', '%' . $request->SearchName . '%')->orWhere('detail', 'like', '%' . $request->SearchName . '%')->get();
+      }else {
+         // dd($items);      
+         $items = Item::all();
+        //  $items = Item::paginate(5);
       }
 
-    } else {
-      $items = Item::all();
-    }
 
+    } elseif ($request->Search == "keyword") {
+      if ($request->SearchWord) {
+        if ($request->AndSearchWord && ("checked" == $request->input("checkbox"))) {
+          $items = Item::where('keyword', 'like', '%' . $request->SearchWord . '%')->Where('keyword', 'like', '%' . $request->AndSearchWord . '%')->get();
+          // dd($items);
+        } else {
+          $items = Item::where('keyword', 'like', '%' . $request->SearchWord . '%')->get();
+          // dd($request);                    
+        }
+
+      } else {
+        $items = Item::all();
+        // $items = Item::paginate(5);
+      }
+    }
+    else {
+      $items = Item::cursorpaginate(5);
+    }
 
     return view('item.index', [
       'items' => $items,
       'image' => $images,
+      'SearchName' => $request->SearchName,
       'SearchWord' => $request->SearchWord,
       'AndSearchWord' => $request->AndSearchWord,
       'count' => $count,
@@ -67,12 +94,33 @@ class ItemController extends Controller
    */
   public function add(Request $request)
   {
+
+
+
     // POSTリクエストのとき
     if ($request->isMethod('post')) {
       // バリデーション
-      $this->validate($request, [
-        'name' => 'required|max:100',
-      ]);
+      // $this->validate($request, [
+      //   'name' => 'required|max:100',
+      $rule = [
+        //バリデーションのルール
+        'name' => 'required|max:100|unique:items',
+        'type' => 'required',
+        // 'detail' => 'required|max:500',
+      ];
+      $msg = [
+        //表示される内容
+        'name.required' => 'Itemは必須です。',
+        'name.max' => 'Itemの文字数は100文字以内です。',
+        'name.unique' => 'そのItemは登録済みです。',
+        'type.required' => '種類は必須です。',
+        // 'detail.required' => 'required|max:500',
+      ];
+
+      $request->validate($rule, $msg);
+
+
+      // ]);
       $image = null;
       if ($request->image != Null) {
         $image = base64_encode(file_get_contents($request->image->getRealPath()));
@@ -138,37 +186,51 @@ class ItemController extends Controller
     // ]);
     return redirect('/items');
   }
+  public function csvfile_set()
+  {
+    return view('item.csvfile_set');
+  }
+
 
   public function csv_upload(Request $request)
   {
     // dd($request);
     if ($request->hasFile('csv')) {
+      if($request->csv->getClientOriginalExtension() !== "csv") {
+        return redirect()->back()->with('error', '拡張子がCSVではりません');
+        // throw new Exception("拡張子が不正です。");
+      }
       $file = $request->file('csv');
       $csvData = file($file->getRealPath());
-
-    // $path = 'storage/app/'.$request->csv->store('csv');
-    // $collection = fastexcel()->import($path);
-    // $realpath = $request->csv->getRealPath();
-    // $collection = (new FastExcel)->import($path);
-    // dd($collection);
-    // $collection = (new FastExcel)->configureCsv(';', '#', 'gbk')->import('file.csv');
-    // $Items = (new FastExcel)->import('file.xlsx', function ($line) {}
-      array_shift($csvData);// 最初の行(項目ラベルレコード)をスキップ
-      // dd($csvData);
-      foreach ($csvData as $item) {
-        $data = str_getcsv($item); // CSV行を配列に変換
+        
+    //   $extension = $csvData->getClientOriginalExtension();
+    //   if ($extension !== 'csv') {
+    //     return response()->json(['error' => '無効なファイル形式です。CSVファイルのみが許可されています。'], 400);
+    // }
+      foreach ($csvData as $row) {
+        $data = str_getcsv($row); // CSV行を配列に変換
+        //validation   
+        // $validator = Validator::make($data, [
+        //       1 => 'numeric', 
+        //       2 => 'confirmed|required|string|max:255', 
+        //       // 10 => 'url',
+        // ]);
+        // if ($validator->fails()) {
+        //   // バリデーションに失敗した場合の処理
+        //   return back()->withErrors($validator)->withInput();
+        // }
 
         // YourModelにデータを保存
         Item::create([
           // 'id'=> $data[0],//count+++
           'user_id' => $data[1],
           'name' => $data[2],
-          'status'=> $data[3],
+          'status' => $data[3],
           'type' => $data[4],
           'detail' => $data[5],
           'created_at' => $data[6],
           'updated_at' => $data[7],
-          'image' =>  $data[8],
+          'image' => $data[8],
           'keyword' => $data[9],
           'url' => $data[10]
           // 'column1' => $data[0], // CSV列に応じて適切なカラムを指定
@@ -178,7 +240,8 @@ class ItemController extends Controller
       }
       return redirect()->back()->with('success', 'CSVファイルがインポートされました。');
     }
-    return redirect()->back()->with('error', 'CSVファイルがアップロードされていません。');
+    return redirect()->back()->with('error', 'CSVファイルの値の型が正しいか確認して下さい。');
+
   }
   //     return Item::create([
   //         'user_id' => Auth::user()->id,
@@ -189,5 +252,5 @@ class ItemController extends Controller
   //         'keyword' => $request->keyword,
   //     ]);
   // };
- 
+
 }

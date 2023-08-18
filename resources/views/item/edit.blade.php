@@ -26,14 +26,23 @@
             <input type="text" class="form-control" id="name" name="name" placeholder="名前" value="{{$item->name}}">
           </div>
 
-					<div class="form-group">
+          <div class="form-group">
             <label for="name">URL</label>
             <input type="text" class="form-control" id="url" name="url" placeholder="URL" value="{{$item->url}}">
           </div>
 
           <div class="form-group">
             <label for="type">種別</label>
-            <input type="number" class="form-control" id="type" name="type" placeholder="1, 2, 3, ..." value="{{$item->type}}">
+            <select class="form-select" name="type">
+              <option value="">選択して下さい</option>
+              <option value="1">WEB</option>
+              <option value="2">本</option>
+            </select>
+            @if($errors->has('type'))
+            <span style="color: red;">
+              {{ $errors->first('type') }}
+            </span>
+            @endif
           </div>
 
           <div class="form-group">
