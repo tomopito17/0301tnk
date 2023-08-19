@@ -3,7 +3,7 @@
 @section('title', 'ユーザ一覧')
 
 @section('content_header')
-<h1>ユーザー一覧</h1>
+<h1>ユーザ一覧</h1>
 @stop
 
 @section('content')
