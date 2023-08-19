@@ -113,14 +113,17 @@ class ItemController extends Controller
         //バリデーションのルール
         'name' => 'required|max:100|unique:items',
         'type' => 'required',
+        'url' => 'required|unique:items',
         // 'detail' => 'required|max:500',
       ];
       $msg = [
         //表示される内容
-        'name.required' => 'Itemは必須です。',
+        'name.required' => '名前登録は必須です。',
         'name.max' => 'Itemの文字数は100文字以内です。',
-        'name.unique' => 'そのItemは登録済みです。',
+        'name.unique' => 'その名前では登録済みです。',
         'type.required' => '種類は必須です。',
+        'url.required' => 'URL登録は必須です',
+        'url.unique' => 'そのURLは登録済みです。',
         // 'detail.required' => 'required|max:500',
       ];
 

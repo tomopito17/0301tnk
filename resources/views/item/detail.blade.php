@@ -1,7 +1,13 @@
 @extends('adminlte::page')
 
 @section('content_header')
-<h1>教材詳細</h1>
+<h1>教材詳細　
+  @if(!is_null($item->image))
+<img src="data:image/png;base64, {{ $item->image }} " id="File_img" height="50px" style="vertical-align: top">
+@else <span style="font-size: small">{{"アイコン無"}}</span>
+@endif
+</h1>
+
 @stop
 
 @section('content')
@@ -49,12 +55,12 @@
           </div>
 
           {{-- <div class="form-group"> --}}
-            <label for="image">画像アイコン</label>
+            <label for="image">アイコン画像</label>
             {{-- <input type="file" id="file" name="image"><br> --}}
-            {{-- @if(!is_null($item->image)) --}}
+            @if(!is_null($item->image))
             <img src="data:image/png;base64, {{ $item->image }} " id="File_img" width="300px" style="vertical-align: top">
-            {{-- @else{{"画像を変更中"}} --}}
-            {{-- @endif --}}
+            @else{{"アイコン無"}}
+            @endif
             {{-- <div>
               <span id="msg"></span>
             </div> --}}
