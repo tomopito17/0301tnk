@@ -74,7 +74,8 @@ class ItemController extends Controller
       }
     }
     else {
-      $items = Item::cursorpaginate(5);
+      $items = Item::all();
+      // $items = Item::cursorpaginate(5);
     }
 
     return view('item.index', [
@@ -89,13 +90,19 @@ class ItemController extends Controller
     // return view('item.index', compact('items', 'images'));
   }
 
+  public function detail($id){
+    $item = Item::find($id);
+    //dd($item);
+    return view('item.detail',compact('item')
+    //,['item' => $item,]
+    );  //compact('items'));
+  }
+
   /**
    * 商品登録
    */
   public function add(Request $request)
   {
-
-
 
     // POSTリクエストのとき
     if ($request->isMethod('post')) {

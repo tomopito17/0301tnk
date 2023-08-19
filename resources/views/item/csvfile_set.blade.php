@@ -7,6 +7,13 @@
 @stop
 
 @section('content')
+@if(session('success') !=Null)
+@dump(session('success'))
+@endif
+@if(session('error') !=Null)
+@dump(session('error'))
+{{-- {{"ファイル名○○"}} --}}
+@endif
 <div class="row">
   @if ($errors->any())
   <div class="alert alert-danger">
@@ -23,14 +30,6 @@
     <button onclick="getFileName()">CSVアップロード</button>
   </form>
 </div>
-@if(session('success') !=Null)
-@dump(session('success'))
-{{-- {{"ファイル名○○"}} --}}
-@endif
-@if(session('error') !=Null)
-@dump(session('error'))
-{{-- {{"ファイル名○○"}} --}}
-@endif
 
 @stop
 

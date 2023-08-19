@@ -1,7 +1,7 @@
 @extends('adminlte::page')
 
 @section('content_header')
-<h1>教材編集</h1>
+<h1>教材詳細</h1>
 @stop
 
 @section('content')
@@ -16,64 +16,55 @@
     </ul>
   </div>
   @endif
-  <form action="{{ url('items/edit') }}/{{ $item->id }}" method="POST" class="form-horizontal" enctype="multipart/form-data">
+  {{-- <form action="{{ url('items/edit') }}/{{ $item->id }}" method="POST" class="form-horizontal" enctype="multipart/form-data"> --}}
     <div class="card card-primary">
       <form method="POST">
         @csrf
         <div class="card-body">
           <div class="form-group">
             <label for="name">名前</label>
-            <input type="text" class="form-control" id="name" name="name" placeholder="名前" value="{{$item->name}}">
+            <input type="text" class="form-control" id="name" name="name" placeholder="名前" value="{{$item->name}}"  readonly style="background-color: transparent">
           </div>
 
           <div class="form-group">
             <label for="name">URL</label>
-            <input type="text" class="form-control" id="url" name="url" placeholder="URL" value="{{$item->url}}">
+            <input type="text" class="form-control" id="url" name="url" placeholder="URL" value="{{$item->url}}" readonly style="background-color: transparent">
           </div>
 
           <div class="form-group">
             <label for="type">種別</label>
-            <select class="form-select" name="type">
-              <option value="">選択して下さい</option>
-              <option value="1">WEB</option>
-              <option value="2">本</option>
+            <select class="form-select" name="type" disabled style="color: black">
+              <option value="{{$item->type}}"> @if($item->type==1)Web @else 本 @endif</option>             
             </select>
-            @if($errors->has('type'))
-            <span style="color: red;">
-              {{ $errors->first('type') }}
-            </span>
-            @endif
           </div>
 
           <div class="form-group">
             <label for="keyword">キーワード</label>
-            <input type="text" class="form-control" id="keyword" name="keyword" placeholder="キーワード" value="{{$item->keyword}}">
+            <input type="text" class="form-control" id="keyword" name="keyword" placeholder="キーワード" value="{{$item->keyword}}" readonly style="background-color: transparent">
           </div>
 
           <div class="form-group">
             <label for="detail">詳細</label>
-            <textarea class="form-control" id="detail" name="detail" placeholder="詳細説明" rows="6" cols="50" >{{$item->detail}}</textarea>
+            <textarea class="form-control" id="detail" name="detail" placeholder="詳細説明" rows="6" cols="50" readonly style="background-color: transparent" >{{$item->detail}}</textarea>
           </div>
 
-          <div class="form-group">
+          {{-- <div class="form-group"> --}}
             <label for="image">画像アイコン</label>
-            <input type="file" id="file" name="image"><br>
-            @if(!is_null($item->image))
+            {{-- <input type="file" id="file" name="image"><br> --}}
+            {{-- @if(!is_null($item->image)) --}}
             <img src="data:image/png;base64, {{ $item->image }} " id="File_img" width="300px" style="vertical-align: top">
             {{-- @else{{"画像を変更中"}} --}}
-            @endif
-            <div>
+            {{-- @endif --}}
+            {{-- <div>
               <span id="msg"></span>
-            </div>
+            </div> --}}
             {{-- @foreach ($images as $image)
                         <img src="{{ asset($image->path) }}">
             @endforeach --}}
           </div>
         </div>
 
-        <div class="card-footer">
-          <button type="submit" class="btn btn-primary">編集OK</button>
-        </div>
+
       </form>
 
     </div>

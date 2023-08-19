@@ -10,10 +10,10 @@
 
 <div class="container-fluid" style="width: 100%">
   <div class="row px-0">
-  <h1>教材リスト</h1>
+  <h1>教材リスト　</h1>
     <div class="col">
       <form action="/items" method="GET">
-      <label for="type" class="form-label">名前か詳細で検索対象を選択</label>        
+      <label for="type" class="form-label">名前か詳細、または両方を検索対象として選択</label>        
       <select class="form-select" name="select" >
         {{-- <option value="" >選択してください</option> --}}
         <option value="select-name" @if(isset($_GET['select']) && $_GET['select'] == 'select-name'){{"selected"}} @endif>名前</option>
@@ -40,12 +40,11 @@
   <form action="/items" method="GET">
 
     <div class="row">
-      <label for="type" class="form-label">キーワード検索</label>
+      <label for="type" class="form-label">キーワード検索　</label>
       <div class="col px-0">
         <div class="input-group	">
           <input type="text" class="form-control" placeholder="キーワード検索" name="SearchWord" value="@isset($SearchWord){{$SearchWord}} @endisset" aria-describedby="button-addon2">
         </div>
-        <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="Search" value="keyword">キーワード検索</button>
       </div>
 
       <div class="col px-0">
@@ -57,6 +56,7 @@
         </div>
       </div>
     </div>
+    <button class="btn btn-outline-secondary" type="submit" id="button-addon2" name="Search" value="keyword">キーワード検索</button>キーワードを2つでAND検索する際はチェックボックスにチェック(☑)をいれてください
   </form>
 
   {{-- <div class="row">
@@ -75,9 +75,9 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h3 class="card-title">教材一覧</h3>
+        <h3 class="card-title"><b>教材一覧</b></h3>
         @if (count($items) > 0)
-        <span class="item-sum">{{"　登録数：" . $count}}</span>
+        <span class="item-sum">　　IDより詳細ページへ{{"　　全登録数：" . $count}}</span>
         @endif
         <div class="card-tools">
           <div class="input-group input-group-sm">
@@ -93,7 +93,7 @@
             <tr>
               <th>ID</th>
               <th>名前(リンク)</th>
-              <th>アイコン</th>                  
+              <th class=text-center>アイコン</th>                  
               <th class=text-center>種別/登録者</th>
               <th>詳細</th>
               <th>変更</th>
@@ -103,15 +103,15 @@
           <tbody>
             @foreach ($items as $item)
             <tr>
-              <td>{{ $item->id }}</td>
-              <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap; max-width:25%">
-                <a href="{{$item->url}}" target="_blank">{{ $item->name }}</a>
+              <td><a href="{{ url('/items/detail' ,$item->id)}}">{{ $item->id }}</a></td>
+              <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap; max-width:200px">
+                <a href="{{$item->url}}" target="_blank" >{{ $item->name }}</a>
               </td>
               
-              <td>
-                <input type="hidden" id="file" name="image">
+              <td class=text-center>
+                <input type="hidden" id="file" name="image" >
                 @if($item->image!=Null)
-                <img src="data:image/png;base64, {{ $item->image }} " style="max-height: 50px; width:auto">
+                <img src="data:image/png;base64, {{ $item->image }}" style="height:30px; width:30px; object-fit:cover">
                 @else {{"画像無"}}
                 @endif
               </td>
@@ -119,7 +119,7 @@
               <td class=text-center>
                 @if($item->type==1)Web @else 本 @endif {{"/".$item->user->name}}
               </td>
-              <td><details><summary></summary>{{ $item->detail }}</details></td>
+              <td style="overflow: hidden; text-overflow: ellipsis;white-space: nowrap; max-width:400px"><details><summary>{{mb_strimwidth($item->detail, 0, 7, '…')}}</summary>{{ $item->detail }}</details></td>
               {{-- <td> 
                 @csrf
                 <input type="hidden" name="id" value="{{$item->id}}">
@@ -129,7 +129,7 @@
               @endforeach
               <td> --}}
               <td>
-                <button class="toggle-details" >管理</button>
+                <button class="toggle-details" class=text-center>管理</button>
                 <div class="details" style="display: none;">
                 <div class="row">
                   <form action="{{url('items/delete')}}" method="POST" onsubmit="return confirm('削除してよろしいですか？');">
@@ -157,6 +157,8 @@
     </div>
   </div>
 </div>
+{{-- @if(($request->Search == "Name") || ($request->Search == "keyword")){{}} @else{{$items->links}}
+@endif --}}
 {{-- @if() {{$items->links()}}
 @endif --}}
 {{-- <form method="POST" action="/items/upload" enctype="multipart/form-data">
