@@ -217,6 +217,7 @@ class ItemController extends Controller
     //   if ($extension !== 'csv') {
     //     return response()->json(['error' => '無効なファイル形式です。CSVファイルのみが許可されています。'], 400);
     // }
+      array_shift($csvData);// 最初の行(項目ラベルレコード)をスキップ
       foreach ($csvData as $row) {
         $data = str_getcsv($row); // CSV行を配列に変換
         //validation   
