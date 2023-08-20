@@ -33,8 +33,9 @@
           </div>
 
           <div class="form-group">
-            <label for="name">URL</label>
-            <input type="text" class="form-control" id="url" name="url" placeholder="URL" value="{{$item->url}}" readonly style="background-color: transparent">
+            <label for="name">URL：　</label>
+            <a href="{{$item->url}}" target="_blank">{{ $item->url }}</a>
+            {{-- <input type="text" class="form-control" id="url" name="url" placeholder="URL" value="{{$item->url}}" readonly style="background-color: transparent"> --}}
           </div>
 
           <div class="form-group">
