@@ -72,8 +72,11 @@
 
 
       </form>
-
+      <div class="card-footer">
+        <a href="/items">戻る(教材一覧)</a>
+      </div>
     </div>
+
 </div>
 <!-- </div -->
 @stop

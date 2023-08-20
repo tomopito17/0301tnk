@@ -72,6 +72,7 @@
 
         <div class="card-footer">
           <button type="submit" class="btn btn-primary">登録</button>
+          <a href="/items">　　キャンセル(戻る)</a>
         </div>
       </form>
     </div>
