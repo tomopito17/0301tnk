@@ -29,9 +29,7 @@
         <tr>
             <th>権限</th> 
             <td>
-            @if($user->id=!1)
             <input type="radio" name="role" value="1" @if(($user->role==1)) checked @endif>ユーザ
-            @endif
             <input type="radio" name="role" value="2" @if($user->role==2) checked @endif>管理者
             </td>
         </tr> 

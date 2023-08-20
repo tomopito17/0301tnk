@@ -108,10 +108,10 @@
     //  if(wkName=="") {
     //    result.innerHTML = "画像は未掲載です。";
     //  }
-    if (wkName != inputfile.name) {
+    // if (wkName != inputfile.name) {
       // メッセージ表示
       result.innerHTML = "画像を追加または変更を設定中です";
-    } //else省略
+    // } //else省略
   });
 </script>
 @stop
