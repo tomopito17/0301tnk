@@ -51,7 +51,7 @@
 
           <div class="form-group">
             <label for="detail">詳細</label>
-            <textarea class="form-control" id="detail" name="detail" placeholder="詳細説明" rows="6" cols="50" readonly style="background-color: transparent" >{{$item->detail}}</textarea>
+            <textarea class="form-control" id="detail" name="detail" placeholder="詳細説明" rows="2" cols="50" readonly style="background-color: transparent" >{{$item->detail}}</textarea>
           </div>
 
           {{-- <div class="form-group"> --}}

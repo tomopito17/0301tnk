@@ -220,6 +220,7 @@ class ItemController extends Controller
       array_shift($csvData);// 最初の行(項目ラベルレコード)をスキップ
       foreach ($csvData as $row) {
         $data = str_getcsv($row); // CSV行を配列に変換
+        // dd($data);
         //validation   
         // $validator = Validator::make($data, [
         //       1 => 'numeric', 
