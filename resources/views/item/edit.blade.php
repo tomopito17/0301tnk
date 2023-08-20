@@ -33,10 +33,9 @@
 
           <div class="form-group">
             <label for="type">種別</label>
-            <select class="form-select" name="type">
-              <option value="">選択して下さい</option>
-              <option value="1">WEB</option>
-              <option value="2">本</option>
+            <select class="form-select" name="type" value="{{$item->type}}">
+              <option value="1" @if($item->type ==1 ){{"selected"}} @endif>WEB</option>
+              <option value="2" @if($item->type ==2 ){{"selected"}} @endif>本</option>
             </select>
             @if($errors->has('type'))
             <span style="color: red;">
@@ -74,6 +73,7 @@
 
         <div class="card-footer">
           <button type="submit" class="btn btn-primary">編集OK</button>
+          <a href="/items">　　キャンセル(戻る)</a>
         </div>
       </form>
 

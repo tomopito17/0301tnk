@@ -28,7 +28,7 @@
             <input type="text" class="form-control" id="name" name="name" placeholder="名前">
           </div>
 
-					<div class="form-group">
+          <div class="form-group">
             <label for="name">URL</label>
             <input type="text" class="form-control" id="name" name="url" placeholder="URL">
           </div>
@@ -47,30 +47,31 @@
             </span>
             @endif
           </div>
-          
-          <div class="form-group">            
+
+          <div class="form-group">
             <label for="keyword">キーワード</label>
-						<input type="text" class="form-control" id="keyword" name="keyword" placeholder="キーワード">
+            <input type="text" class="form-control" id="keyword" name="keyword" placeholder="キーワード">
           </div>
         </div>
 
-          <div class="form-group">
-            <label for="detail">詳細</label>
-            <textarea class="form-control" id="detail" name="detail" placeholder="詳細説明" rows="6" cols="50" ></textarea>
-          </div>
+        <div class="form-group">
+          <label for="detail">詳細</label>
+          <input type="text" class="form-control" id="detail" name="detail" placeholder="詳細説明">
+          {{-- <textarea class="form-control" id="detail" name="detail" placeholder="詳細説明" rows="6" cols="50" ></textarea> --}}
+        </div>
 
-          <div class="form-group">
-            <label for="image">画像アイコン</label><br>
-            <input type="file" id="file" name="image"><br>
-            <div>
-              <span id="msg"></span>
-            </div>
+        <div class="form-group">
+          <label for="image">画像アイコン</label><br>
+          <input type="file" id="file" name="image"><br>
+          <div>
+            <span id="msg"></span>
           </div>
+        </div>
 
 
 
         <div class="card-footer">
-					<button type="submit" class="btn btn-primary">登録</button>
+          <button type="submit" class="btn btn-primary">登録</button>
         </div>
       </form>
     </div>
@@ -83,7 +84,7 @@
 
 @section('js')
 <script>
-//   /*入力フォームの要素*/　EditBlade引用
+  //   /*入力フォームの要素*/　EditBlade引用
   var fileform = document.getElementById("file");
   /*結果出力用の要素*/
   var result = document.getElementById("msg");
@@ -106,10 +107,12 @@
     //  }
     // if (wkName != inputfile.name) 
     // {
-      // メッセージ表示
-      result.innerHTML = "画像登録を設定中です";
+    // メッセージ表示
+    result.innerHTML = "画像登録を設定中です";
     // } //else省略
   });
 
-// </script>
+  // 
+
+</script>
 @stop
