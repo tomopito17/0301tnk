@@ -7,6 +7,7 @@ use App\Models\Image;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
+use Illuminate\Validation\Rule;
 use App\Models\Tag;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Support\Facades\Validator;
@@ -48,12 +49,11 @@ class ItemController extends Controller
         $items = Item::where('name', 'like', '%' . $request->SearchName . '%')->get();
       } elseif ($request->SearchName && ($select == "select-detail")) {
         $items = Item::where('detail', 'like', '%' . $request->SearchName . '%')->get();
-      }
-      elseif($request->SearchName && ($select == "select-both")){
+      } elseif ($request->SearchName && ($select == "select-both")) {
         $items = Item::where('name', 'like', '%' . $request->SearchName . '%')->orWhere('detail', 'like', '%' . $request->SearchName . '%')->get();
-      }else {
-         // dd($items);      
-         $items = Item::all();
+      } else {
+        // dd($items);      
+        $items = Item::all();
         //  $items = Item::paginate(5);
       }
 
@@ -72,8 +72,7 @@ class ItemController extends Controller
         $items = Item::all();
         // $items = Item::paginate(5);
       }
-    }
-    else {
+    } else {
       $items = Item::all();
       // $items = Item::cursorpaginate(5);
     }
@@ -90,12 +89,15 @@ class ItemController extends Controller
     // return view('item.index', compact('items', 'images'));
   }
 
-  public function detail($id){
+  public function detail($id)
+  {
     $item = Item::find($id);
     //dd($item);
-    return view('item.detail',compact('item')
-    //,['item' => $item,]
-    );  //compact('items'));
+    return view(
+      'item.detail',
+      compact('item')
+      //,['item' => $item,]
+    ); //compact('items'));
   }
 
   /**
@@ -172,29 +174,58 @@ class ItemController extends Controller
 
   public function ItemEdit($id, Request $request)
   {
-    //取得した既存レコードから編集する
-    //$item = Item::find($id);
-    //$item = Item::where('id','=',$request->id)
-    //   ->update([
-    // $image = base64_encode(file_get_contents($request->image->getRealPath()));
-    $item = Item::find($id);
-    $item->name = $request->name;
-    $item->url = $request->url;
-    $item->type = $request->type;
-    $item->detail = $request->detail;
-    $item->keyword = $request->keyword;
-    if ($request->image) {
-      $item->image = base64_encode(file_get_contents($request->image->getRealPath()));
+
+    // バリデーション
+    // $this->validate($request, [
+    //   'name' => 'required|max:100',
+    $rule = [
+      //バリデーションのルール
+      'name' => ['required','max:100',Rule::unique('items')->ignore($id)],
+      'type' => 'required',
+      'url' => ['required',Rule::unique('items')->ignore($id)],
+      // 'url' => 'required|unique:items',
+      // 'detail' => 'required|max:500',
+    ];
+    $msg = [
+      //表示される内容
+      'name.required' => '名前登録は必須です。',
+      'name.max' => 'Itemの文字数は100文字以内です。',
+      'name.unique' => 'その名前では登録済みです。',
+      'type.required' => '種類は必須です。',
+      'url.required' => 'URL登録は必須です',
+      'url.unique' => 'そのURLは登録済みです',
+      // 'url.unique' => 'そのURLは登録済みです。',
+      // 'detail.required' => 'required|max:500',
+    ];
+    if ($request->delete) {
+      Item::find($request->id)->delete();
+    } else {
+      $request->validate($rule, $msg);
+      //取得した既存レコードから編集する
+      //$item = Item::find($id);
+      //$item = Item::where('id','=',$request->id)
+      //   ->update([
+      // $image = base64_encode(file_get_contents($request->image->getRealPath()));
+      $item = Item::find($id);
+      $item->name = $request->name;
+      $item->url = $request->url;
+      $item->type = $request->type;
+      $item->detail = $request->detail;
+      $item->keyword = $request->keyword;
+      if ($request->image) {
+        $item->image = base64_encode(file_get_contents($request->image->getRealPath()));
+      }
+      $item->save();
+      // update([
+      //     'name' => $request->name,
+      //     'type' => $request->type,
+      //     'detail' => $request->detail,
+      //     'image' => $image,
+      //     'keyword' => $request->keyword,
+      // ]);
     }
-    $item->save();
-    // update([
-    //     'name' => $request->name,
-    //     'type' => $request->type,
-    //     'detail' => $request->detail,
-    //     'image' => $image,
-    //     'keyword' => $request->keyword,
-    // ]);
-    return redirect('/items');
+      return redirect('/items');
+
   }
   public function csvfile_set()
   {
@@ -206,18 +237,18 @@ class ItemController extends Controller
   {
     // dd($request);
     if ($request->hasFile('csv')) {
-      if($request->csv->getClientOriginalExtension() !== "csv") {
+      if ($request->csv->getClientOriginalExtension() !== "csv") {
         return redirect()->back()->with('error', '拡張子がCSVではりません');
         // throw new Exception("拡張子が不正です。");
       }
       $file = $request->file('csv');
       $csvData = file($file->getRealPath());
-        
-    //   $extension = $csvData->getClientOriginalExtension();
-    //   if ($extension !== 'csv') {
-    //     return response()->json(['error' => '無効なファイル形式です。CSVファイルのみが許可されています。'], 400);
-    // }
-      array_shift($csvData);// 最初の行(項目ラベルレコード)をスキップ
+
+      //   $extension = $csvData->getClientOriginalExtension();
+      //   if ($extension !== 'csv') {
+      //     return response()->json(['error' => '無効なファイル形式です。CSVファイルのみが許可されています。'], 400);
+      // }
+      array_shift($csvData); // 最初の行(項目ラベルレコード)をスキップ
       foreach ($csvData as $row) {
         $data = str_getcsv($row); // CSV行を配列に変換
         // dd($data);
