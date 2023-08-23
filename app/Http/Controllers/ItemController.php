@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Item;
 use Illuminate\Validation\Rule;
 use App\Models\Tag;
+use Illuminate\Validation\Rules\Unique;
 use Rap2hpoutre\FastExcel\FastExcel;
 use Illuminate\Support\Facades\Validator;
 
@@ -257,7 +258,7 @@ class ItemController extends Controller
         // dd($result);
         $rules = [
           'user_id' => 'required | integer',        //userid
-          'name' => 'required | string | max:1000',
+          'name' => 'required|string|max:1000|unique:items',
           'status' => 'required | string | max:100', //'status'
           'type' => 'required|integer',            //type
           'detail' => 'required|string|max:500',     //detail
@@ -265,7 +266,7 @@ class ItemController extends Controller
           'updated_at' => 'date',                        //updated_at
           'image' => 'string',                      //image
           'keyword' => 'string',                      //keyword
-          'url' => 'required|string|url',           //url
+          'url' => 'required|string|url|unique:items',           //url
         ];
 
         $msg =[
