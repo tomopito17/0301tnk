@@ -257,7 +257,7 @@ class ItemController extends Controller
         // dd($result);
         $rules = [
           'user_id' => 'required | integer',        //userid
-          'name' => 'required | string | max:1000|unique',
+          'name' => 'required | string | max:1000',
           'status' => 'required | string | max:100', //'status'
           'type' => 'required|integer',            //type
           'detail' => 'required|string|max:500',     //detail
@@ -265,7 +265,7 @@ class ItemController extends Controller
           'updated_at' => 'date',                        //updated_at
           'image' => 'string',                      //image
           'keyword' => 'string',                      //keyword
-          'url' => 'required|string|url|unique',           //url
+          'url' => 'required|string|url',           //url
         ];
 
         $msg =[
@@ -285,7 +285,7 @@ class ItemController extends Controller
 
         // バリデーションに失敗した場合はエラーメッセージを表示
         if ($validator->fails()) {
-          return redirect()->back()->withErrors($validator)->with('error', 'CSVファイルの値の型が正しくない、または必要な値がNullです。');
+          return redirect()->back()->withErrors($validator)->with('error', 'CSVファイルの値の型が正しくないか登録済み、または必要な値がNullです。');
         }
 
         // ItemModelにデータを保存
