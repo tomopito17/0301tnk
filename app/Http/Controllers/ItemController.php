@@ -257,7 +257,7 @@ class ItemController extends Controller
         // dd($result);
         $rules = [
           'user_id' => 'required | integer',        //userid
-          'name' => 'required | string | max:1000',
+          'name' => 'required | string | max:1000|unique',
           'status' => 'required | string | max:100', //'status'
           'type' => 'required|integer',            //type
           'detail' => 'required|string|max:500',     //detail
@@ -265,7 +265,7 @@ class ItemController extends Controller
           'updated_at' => 'date',                        //updated_at
           'image' => 'string',                      //image
           'keyword' => 'string',                      //keyword
-          'url' => 'required|string|url',           //url
+          'url' => 'required|string|url|unique',           //url
         ];
 
         $msg =[
