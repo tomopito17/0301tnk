@@ -115,7 +115,7 @@ class ItemController extends Controller
         //バリデーションのルール
         'name' => 'required|max:100|unique:items',
         'type' => 'required',
-        'url' => 'required|unique:items',
+        'url' => 'required|url|unique:items',
         // 'detail' => 'required|max:500',
       ];
       $msg = [
@@ -126,6 +126,7 @@ class ItemController extends Controller
         'type.required' => '種類は必須です。',
         'url.required' => 'URL登録は必須です',
         'url.unique' => 'そのURLは登録済みです。',
+        'url.url' => 'urlが有効ではありません。'
         // 'detail.required' => 'required|max:500',
       ];
 
@@ -180,9 +181,9 @@ class ItemController extends Controller
     //   'name' => 'required|max:100',
     $rule = [
       //バリデーションのルール
-      'name' => ['required','max:100',Rule::unique('items')->ignore($id)],
-      'type' => 'required',
-      'url' => ['required',Rule::unique('items')->ignore($id)],
+      'name' => ['required', 'max:100', Rule::unique('items')->ignore($id)],
+      'type' => 'required', 
+      'url' => ['required', 'url',Rule::unique('items')->ignore($id)],
       // 'url' => 'required|unique:items',
       // 'detail' => 'required|max:500',
     ];
@@ -193,9 +194,8 @@ class ItemController extends Controller
       'name.unique' => 'その名前では登録済みです。',
       'type.required' => '種類は必須です。',
       'url.required' => 'URL登録は必須です',
+      'url.url' => 'URL登録は必須です',
       'url.unique' => 'そのURLは登録済みです',
-      // 'url.unique' => 'そのURLは登録済みです。',
-      // 'detail.required' => 'required|max:500',
     ];
     if ($request->delete) {
       Item::find($request->id)->delete();
@@ -224,7 +224,7 @@ class ItemController extends Controller
       //     'keyword' => $request->keyword,
       // ]);
     }
-      return redirect('/items');
+    return redirect('/items');
 
   }
   public function csvfile_set()
@@ -244,26 +244,51 @@ class ItemController extends Controller
       $file = $request->file('csv');
       $csvData = file($file->getRealPath());
 
-      //   $extension = $csvData->getClientOriginalExtension();
-      //   if ($extension !== 'csv') {
-      //     return response()->json(['error' => '無効なファイル形式です。CSVファイルのみが許可されています。'], 400);
-      // }
+      $validator = Validator::make([], [], []); // 空のバリデータを作成
       array_shift($csvData); // 最初の行(項目ラベルレコード)をスキップ
+
       foreach ($csvData as $row) {
+        $columns = ["id","user_id", "name", "status","type","detail","created_at","updated_at","image","keyword","url"];
+        // $result = [];
         $data = str_getcsv($row); // CSV行を配列に変換
         // dd($data);
-        //validation   
-        // $validator = Validator::make($data, [
-        //       1 => 'numeric', 
-        //       2 => 'confirmed|required|string|max:255', 
-        //       // 10 => 'url',
-        // ]);
-        // if ($validator->fails()) {
-        //   // バリデーションに失敗した場合の処理
-        //   return back()->withErrors($validator)->withInput();
-        // }
+        // カラム名と値を連想配列にマッピングして結果に追加
+        $result = array_combine($columns, $data);
+        // dd($result);
+        $rules = [
+          'user_id' => 'required | integer',        //userid
+          'name' => 'required | string | max:1000',
+          'status' => 'required | string | max:100', //'status'
+          'type' => 'required|integer',            //type
+          'detail' => 'required|string|max:500',     //detail
+          'created_at' => 'date',                        //created_at
+          'updated_at' => 'date',                        //updated_at
+          'image' => 'string',                      //image
+          'keyword' => 'string',                      //keyword
+          'url' => 'required|string|url',           //url
+        ];
 
-        // YourModelにデータを保存
+        $msg =[
+        //   'user_id.required' => 'ユーザIDは必須です',
+        //   'user_id.integer' => 'ユーザID項目に不正な型の値があります',
+        //   'name.required' => '名前登録は必須です。',
+        //   'name.integer' => '名前項目に不正な型の値があります',
+        //   'name.max' => 'Itemの文字数は100文字以内です。',
+        //   'type.required' => '種類は必須です。',
+        //   'type.integer' => '種別項目に不正な型の値があります',
+        //   'url.required' => 'URL登録は必須です',         
+        ];
+
+
+        // バリデーションを実行
+        $validator = Validator::make($result, $rules, $msg);
+
+        // バリデーションに失敗した場合はエラーメッセージを表示
+        if ($validator->fails()) {
+          return redirect()->back()->withErrors($validator)->with('error', 'CSVファイルの値の型が正しくない、または必要な値がNullです。');
+        }
+
+        // ItemModelにデータを保存
         Item::create([
           // 'id'=> $data[0],//count+++
           'user_id' => $data[1],
@@ -295,5 +320,4 @@ class ItemController extends Controller
   //         'keyword' => $request->keyword,
   //     ]);
   // };
-
 }
